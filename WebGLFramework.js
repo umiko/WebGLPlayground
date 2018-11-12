@@ -1,29 +1,18 @@
-var WebGLForFun = {
-    viewportCanvas: null,
-    context: null,
-    shaderProgram: null,
+'use strict';
 
-    vertCode: null,
-    fragCode: null,
+class WebGLForFun {
 
-    preloadShaderCode: async function (){
-        console.log("loading shaders");
+    constructor(vertCode, fragCode){
+        this.vertCode = vertCode;
+        this.fragCode = fragCode;
+    }
 
-        await Promise.all([
-        this.fetchShaderSource("./Shaders/shader.vert")
-            .then(result => {this.vertCode = result;}),
-        this.fetchShaderSource("./Shaders/shader.frag")
-            .then(result => {this.fragCode = result;})
-        ]);
-    },
-
-    mainLoop: function(){
-        this.initWebGL();
+    mainLoop(){
         //update and render loop
         this.gracefulExit();
-    },
+    }
 
-    initWebGL: function () {
+    initWebGL() {
         console.log("initWebGL");
 
         this.viewportCanvas = document.getElementById('sandbox');
@@ -34,11 +23,11 @@ var WebGLForFun = {
         this.context.viewport(0,0, this.viewportCanvas.width, this.viewportCanvas.height);
         this.context.clear(this.context.COLOR_BUFFER_BIT | this.context.DEPTH_BUFFER_BIT);
         this.context.enable(this.context.DEPTH_TEST);
-        this.initShaders();
-    },
+    }
 
-    initShaders: function(){
+    initShaders(){
         console.log("initshaders");
+        console.log(this);
         this.shaderProgram =  this.context.createProgram();
 
         let compiledVertShader = this.compileShader(this.vertCode, this.context.VERTEX_SHADER);
@@ -54,19 +43,15 @@ var WebGLForFun = {
         }
 
         this.context.useProgram(this.shaderProgram);
-    },
+    }
 
-    fetchShaderSource: function(path){
-        console.log("fetching code");
 
-        const code = fetch(path)
-            .then(res => res.text());
-        return code;
-    },
 
-    //Compiles YOUR shadercode and throws an error if you fucked up
-    compileShader: function (shaderSource, shaderType) {
-         let shader = this.context.createShader(shaderType);
+    //Compiles YOUR shader code and throws an error if you fucked up
+    compileShader(shaderSource, shaderType) {
+        console.log(this);
+
+        let shader = this.context.createShader(shaderType);
          this.context.shaderSource(shader, shaderSource);
          this.context.compileShader(shader);
          if(!this.context.getShaderParameter(shader, this.context.COMPILE_STATUS)){
@@ -75,9 +60,9 @@ var WebGLForFun = {
          }
          console.log( "Shader compiled!");
          return shader;
-    },
+    }
 
-    gracefulExit : function () {
+    gracefulExit() {
         this.context.getAttachedShaders(this.shaderProgram).forEach(shader => {
             this.context.detachShader(this.shaderProgram, shader);
             this.context.deleteShader(shader);
@@ -85,4 +70,4 @@ var WebGLForFun = {
         this.context.deleteProgram(this.shaderProgram);
         console.log("Cleaned up your mess.");
     }
-};
+}
