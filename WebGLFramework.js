@@ -54,10 +54,10 @@ class WebGLForFun {
         return shader;
     }
 
-    static createBuffer(context, bufferType, bufferData, bufferUsage, shaderProgram ){
+    static createBuffer(context, bufferType, bufferData, bufferUsage){
         const buffer = context.createBuffer();
-        context.bindBuffer(context.ARRAY_BUFFER, buffer);
-        context.bufferData(context.ARRAY_BUFFER, new Float32Array([0,0]), context.STATIC_DRAW);
+        context.bindBuffer(bufferType, buffer);
+        context.bufferData(bufferType, bufferData, bufferUsage);
         return buffer;
     }
 
@@ -68,5 +68,9 @@ class WebGLForFun {
         });
         context.deleteProgram(shaderProgram);
         console.log("Cleaned up your mess.");
+    }
+
+    static clear(context){
+        context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
     }
 }
