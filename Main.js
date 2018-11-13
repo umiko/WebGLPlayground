@@ -11,10 +11,10 @@ async function main() {
             .then(result => {fragCode = result;})
     ]);
 
-    let myFramework = new WebGLForFun(vertCode,fragCode);
-    myFramework.initWebGL();
-    myFramework.initShaders();
-    myFramework.mainLoop();
+    //let myFramework = new WebGLForFun(vertCode,fragCode);
+    let context = WebGLForFun.initWebGL(document.getElementById('sandbox'));
+    let shaderProgram = WebGLForFun.initShader(context, vertCode, fragCode);
+    WebGLForFun.gracefulExit(context, shaderProgram);
 }
 
 function fetchFile(path){
