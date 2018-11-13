@@ -13,7 +13,6 @@ class WebGLForFun {
         context.clearColor(0, 0, 0, 1);
         context.clearDepth(1.0);
         context.viewport(0,0, viewportCanvas.width, viewportCanvas.height);
-        //context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
         context.enable(context.DEPTH_TEST);
 
         return context;
@@ -21,7 +20,6 @@ class WebGLForFun {
 
     static initShader(context, vertCode, fragCode){
         console.log("initshaders");
-        //console.log(this);
         const shaderProgram =  context.createProgram();
 
         const compiledVertShader = WebGLForFun.compileShader(context, vertCode, context.VERTEX_SHADER);
@@ -59,15 +57,6 @@ class WebGLForFun {
         context.bindBuffer(bufferType, buffer);
         context.bufferData(bufferType, bufferData, bufferUsage);
         return buffer;
-    }
-
-    static gracefulExit(context, shaderProgram) {
-        context.getAttachedShaders(shaderProgram).map(shader => {
-            context.detachShader(shaderProgram, shader);
-            context.deleteShader(shader);
-        });
-        context.deleteProgram(shaderProgram);
-        console.log("Cleaned up your mess.");
     }
 
     static clear(context){
