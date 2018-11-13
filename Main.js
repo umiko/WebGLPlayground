@@ -4,6 +4,8 @@ async function main() {
     let vertCode = "";
     let fragCode = "";
 
+    let objects = [];
+
     await Promise.all([
         fetchFile("./Shaders/shader.vert")
             .then(result => {vertCode = result;}),
@@ -12,21 +14,17 @@ async function main() {
     ]);
 
     let context = WebGLForFun.initWebGL(document.getElementById('sandbox'));
-    let shaderProgram = WebGLForFun.initShader(context, vertCode, fragCode);
-    let buffer = WebGLForFun.createBuffer(context, context.ARRAY_BUFFER, new Float32Array([0.0, 0.0]), context.STATIC_DRAW);
 
-    let posAttribLocation = context.getAttribLocation(shaderProgram, "position");
+    const bufferRoof = WebGLForFun.createBuffer(context, context.ARRAY_BUFFER, new Float32Array([-0.5, 0.0, 0.5,0.0, 0.0,0.5]), context.STATIC_DRAW);
+    objects.push(new DrawableObject(context, vertCode, fragCode, bufferRoof));
+    const bufferHouse = WebGLForFun.createBuffer(context, context.ARRAY_BUFFER, new Float32Array([-0.4, -0.4,0.4,0.0, -0.4, 0.0]), context.STATIC_DRAW);
+    objects.push(new DrawableObject(context, vertCode,fragCode, bufferHouse));
 
     WebGLForFun.clear(context);
-    context.useProgram(shaderProgram);
-    context.enableVertexAttribArray(posAttribLocation);
-    context.vertexAttribPointer(posAttribLocation, 2, context.FLOAT, false, 0,0);
-    context.drawArrays(context.POINTS, 0,1);
-    context.disableVertexAttribArray(posAttribLocation);
-    context.deleteBuffer(buffer);
-    //put shaderprogram and buffer in its own object
 
-    WebGLForFun.gracefulExit(context, shaderProgram);
+    objects.map(drawableObject => drawableObject.draw(context));
+
+    objects.map(drawableObject => drawableObject.destroy(context));
 }
 
 function fetchFile(path){
