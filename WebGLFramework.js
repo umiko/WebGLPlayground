@@ -13,7 +13,7 @@ class WebGLForFun {
         context.clearColor(0, 0, 0, 1);
         context.clearDepth(1.0);
         context.viewport(0,0, viewportCanvas.width, viewportCanvas.height);
-        context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
+        //context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
         context.enable(context.DEPTH_TEST);
 
         return context;
@@ -52,6 +52,13 @@ class WebGLForFun {
         }
         console.log("Shader compiled!");
         return shader;
+    }
+
+    static createBuffer(context, bufferType, bufferData, bufferUsage, shaderProgram ){
+        const buffer = context.createBuffer();
+        context.bindBuffer(context.ARRAY_BUFFER, buffer);
+        context.bufferData(context.ARRAY_BUFFER, new Float32Array([0,0]), context.STATIC_DRAW);
+        return buffer;
     }
 
     static gracefulExit(context, shaderProgram) {
